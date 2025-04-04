@@ -4,3 +4,6 @@ class User(BaseModel):
     name: str
     email: EmailStr
     password:str
+
+class updateName(BaseModel):
+    name:str

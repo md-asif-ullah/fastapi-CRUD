@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException
-from models.user_model import User
+from fastapi import APIRouter
+from models.user_model import User,updateName
 from db.mongo import db
 from helper.users_helper import serizlized_users_data
 from passlib.context import CryptContext
@@ -83,6 +83,42 @@ async def get_user_by_id(user_email: str):
             status_code=200,
             message="User returned successfully",
             data=user_data,
+        )
+    
+    except Exception as e:
+        raise error_response(
+            message=f"An error occurred: {str(e)}",
+            status_code=500,
+        )
+    
+
+@userRoute.put("/{user_email}", status_code=200)
+async def update_name(user_email:str,payload:updateName):
+    try:
+
+    
+        user = await collection.find_one({"email": user_email})
+        if not user:
+            return error_response(
+                message="User not found",
+                status_code=404,
+            )
+        
+        update_user= await collection.update_one(
+            {"email": user_email},
+            {"$set": {"name":payload.name}},
+        )
+
+        if update_user.modified_count == 0:
+            return error_response(
+                message="User not updated",
+                status_code=400,
+            )
+        print(update_user)
+        return success_response(
+            status_code=200,
+            message="User updated successfully",
+            data=[],
         )
     
     except Exception as e:
