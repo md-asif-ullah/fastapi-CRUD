@@ -13,7 +13,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @userRoute.post("/", status_code=201)
-async def create_user(user: User):
+async def Register_user(user: User):
     try:
         user_dict = user.model_dump()
 
@@ -41,7 +41,7 @@ async def create_user(user: User):
             message=f"An error occurred: {str(e)}",
             status_code=500,
         )
-    
+   
 
 @userRoute.get("/")
 async def get_user():
@@ -96,7 +96,6 @@ async def get_user_by_id(user_email: str):
 async def update_name(user_email:str,payload:updateName):
     try:
 
-    
         user = await collection.find_one({"email": user_email})
         if not user:
             return error_response(
